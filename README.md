@@ -1,2 +1,3 @@
-# ray-intersect
-Place holder for golang WASM ray 
+# Ray Intersect
+
+Golang ray intersection implementation.
