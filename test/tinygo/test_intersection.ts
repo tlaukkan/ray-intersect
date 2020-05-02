@@ -1,6 +1,6 @@
 import {expect} from 'chai';
-import instantiateRayIntersectModule from "../src/ray_intersect";
-import newGo from "../src/wasm_exec";
+import instantiateRayIntersectModule from "../../src/tinygo/ray_intersect";
+import newGo from "../../src/tinygo/wasm_exec";
 
 describe('Test intersect.', () => {
 
@@ -9,21 +9,21 @@ describe('Test intersect.', () => {
     const go = newGo();
     console.log(go.importObject);
     const instance = await instantiateRayIntersectModule(go.importObject);
-
     go.run((instance as any).instance).then(r => {});
 
-    while(!(global as any).rayIntersectModuleBinding) {
-      await sleep(50);
-      console.log("waiting go module to bind.");
-    }
+    console.log((instance as any).module);
+    console.log((instance as any).instance.exports.test);
 
     console.log((global as any).rayIntersectModuleBinding.testFunction);
     //const result = (global as any).rayIntersectModuleBinding.testFunction(1);
-    const result = await testFunctionPromise(1);
+    let result = (global as any).rayIntersectModuleBinding.testFunction(1);
     console.log("testFunction result: " + result);
     expect(result).eq(true);
+
+    //const result = (global as any).rayIntersectModuleBinding.testFunction(1);
+    result = (instance as any).instance.exports.test(1);
+    console.log("testFunction result: " + result);
     console.log(result);
-    (global as any).rayIntersectModuleBinding.quit();
   }).timeout(10000);
 
 });
@@ -32,15 +32,3 @@ function sleep(ms: number) {
   return new Promise( resolve => setTimeout(resolve, ms) );
 }
 
-function testFunctionPromise(i: number) {
-  return new Promise((resolve, reject) => {
-    (global as any).rayIntersectModuleBinding.testFunction(i, (err: any, message: string) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-
-      resolve(message);
-    });
-  });
-}
