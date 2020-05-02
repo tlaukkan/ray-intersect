@@ -6,7 +6,11 @@ interface Module {
     (importObject: any): Promise<Instance>
 }
 
-export function newGo(): Go {
+function sleep(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+}
+
+function newGo(): Go {
     if (typeof(global)!=="undefined") {
         return new (global as any).Go();
     }
@@ -15,7 +19,6 @@ export function newGo(): Go {
     }
     throw new Error("No go implementation.");
 }
-
 
 export async function instantiateModule<T>(module: Module): Promise<T> {
     const go = newGo();
@@ -30,7 +33,4 @@ export async function instantiateModule<T>(module: Module): Promise<T> {
     return (global as any).rayIntersectModuleBinding as T;
 }
 
-function sleep(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
-}
 

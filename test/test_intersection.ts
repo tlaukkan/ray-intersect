@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {instantiateModule} from "../src/wasm_util";
+import {instantiateModule} from "../src/wasm/wasm_util";
 import main from "../src/main";
 import {MainInterface} from "../src/MainInterface";
 
